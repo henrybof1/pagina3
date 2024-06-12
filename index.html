@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Inglés para Niños</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"], select {
+            width: calc(100% - 80px);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz de Inglés para Niños</h1>
+        <div id="categorySelection">
+            <p>¿Qué quieres que te pregunte?</p>
+            <select id="category">
+                <option value="frutas">Frutas en inglés</option>
+                <option value="comida">Comida en inglés</option>
+                <option value="cosas">Cosas en inglés</option>
+                <option value="animales">Animales en inglés</option>
+            </select>
+            <button onclick="startQuiz()">Empezar</button>
+        </div>
+        <div id="quiz" style="display:none;">
+            <p id="question">¿Cómo se dice "manzana" en inglés?</p>
+            <input type="text" id="answer" placeholder="Tu respuesta" autocomplete="off">
+            <div class="button-container">
+                <button id="submitBtn" onclick="checkAnswer()">Enviar</button>
+                <button onclick="goToStart()">Volver al inicio</button>
+            </div>
+            <p id="result"></p>
+        </div>
+    </div>
+    <script>
+        const questions = {
+            frutas: [
+                { question: "¿Cómo se dice 'manzana' en inglés?", answer: "apple" },
+                { question: "¿Cómo se dice 'plátano' en inglés?", answer: "banana" },
+                { question: "¿Cómo se dice 'cereza' en inglés?", answer: "cherry" },
+                { question: "¿Cómo se dice 'naranja' en inglés?", answer: "orange" },
+                { question: "¿Cómo se dice 'uva' en inglés?", answer: "grape" },
+                { question: "¿Cómo se dice 'limón' en inglés?", answer: "lemon" },
+                { question: "¿Cómo se dice 'melón' en inglés?", answer: "melon" },
+                { question: "¿Cómo se dice 'sandía' en inglés?", answer: "watermelon" },
+                { question: "¿Cómo se dice 'pera' en inglés?", answer: "pear" },
+                { question: "¿Cómo se dice 'durazno' en inglés?", answer: "peach" },
+                { question: "¿Cómo se dice 'piña' en inglés?", answer: "pineapple" },
+                { question: "¿Cómo se dice 'fresa' en inglés?", answer: "strawberry" },
+                { question: "¿Cómo se dice 'arándano' en inglés?", answer: "blueberry" },
+                { question: "¿Cómo se dice 'frambuesa' en inglés?", answer: "raspberry" },
+                { question: "¿Cómo se dice 'kiwi' en inglés?", answer: "kiwi" },
+                { question: "¿Cómo se dice 'mandarina' en inglés?", answer: "tangerine" },
+                { question: "¿Cómo se dice 'mango' en inglés?", answer: "mango" },
+                { question: "¿Cómo se dice 'papaya' en inglés?", answer: "papaya" },
+                { question: "¿Cómo se dice 'granada' en inglés?", answer: "pomegranate" },
+                { question: "¿Cómo se dice 'pomelo' en inglés?", answer: "grapefruit" },
+                { question: "¿Cómo se dice 'coco' en inglés?", answer: "coconut" },
+                { question: "¿Cómo se dice 'higo' en inglés?", answer: "fig" },
+                { question: "¿Cómo se dice 'aguacate' en inglés?", answer: "avocado" },
+                { question: "¿Cómo se dice 'albaricoque' en inglés?", answer: "apricot" },
+                { question: "¿Cómo se dice 'ciruela' en inglés?", answer: "plum" },
+                { question: "¿Cómo se dice 'maracuyá' en inglés?", answer: "passion fruit" },
+                { question: "¿Cómo se dice 'lichi' en inglés?", answer: "lychee" },
+                { question: "¿Cómo se dice 'guanábana' en inglés?", answer: "soursop" },
+                { question: "¿Cómo se dice 'camu camu' en inglés?", answer: "camu camu" },
+                { question: "¿Cómo se dice 'tamarindo' en inglés?", answer: "tamarind" },
+                { question: "¿Cómo se dice 'carambola' en inglés?", answer: "starfruit" },
+                { question: "¿Cómo se dice 'membrillo' en inglés?", answer: "quince" },
+                { question: "¿Cómo se dice 'guayaba' en inglés?", answer: "guava" },
+                { question: "¿Cómo se dice 'moras' en inglés?", answer: "blackberries" },
+                { question: "¿Cómo se dice 'mandarina' en inglés?", answer: "tangerine" },
+                { question: "¿Cómo se dice 'plátano' en inglés?", answer: "plantain" },
+                { question: "¿Cómo se dice 'chirimoya' en inglés?", answer: "custard apple" },
+                { question: "¿Cómo se dice 'acerola' en inglés?", answer: "acerola" },
+                { question: "¿Cómo se dice 'pitaya' en inglés?", answer: "dragon fruit" },
+                { question: "¿Cómo se dice 'mamey' en inglés?", answer: "mamey sapote" }
+            ],
+            comida: [
+                { question: "¿Cómo se dice 'pan' en inglés?", answer: "bread" },
+                { question: "¿Cómo se dice 'queso' en inglés?", answer: "cheese" },
+                { question: "¿Cómo se dice 'leche' en inglés?", answer: "milk" },
+                { question: "¿Cómo se dice 'huevo' en inglés?", answer: "egg" },
+                { question: "¿Cómo se dice 'pollo' en inglés?", answer: "chicken" },
+                { question: "¿Cómo se dice 'carne' en inglés?", answer: "meat" },
+                { question: "¿Cómo se dice 'pescado' en inglés?", answer: "fish" },
+                { question: "¿Cómo se dice 'arroz' en inglés?", answer: "rice" },
+                { question: "¿Cómo se dice 'pasta' en inglés?", answer: "pasta" },
+                { question: "¿Cómo se dice 'sopa' en inglés?", answer: "soup" },
+                { question: "¿Cómo se dice 'ensalada' en inglés?", answer: "salad" },
+                { question: "¿Cómo se dice 'tomate' en inglés?", answer: "tomato" },
+                { question: "¿Cómo se dice 'patata' en inglés?", answer: "potato" },
+                { question: "¿Cómo se dice 'zanahoria' en inglés?", answer: "carrot" },
+                { question: "¿Cómo se dice 'lechuga' en inglés?", answer: "lettuce" },
+                { question: "¿Cómo se dice 'pepino' en inglés?", answer: "cucumber" },
+                { question: "¿Cómo se dice 'cebolla' en inglés?", answer: "onion" },
+                { question: "¿Cómo se dice 'ajo' en inglés?", answer: "garlic" },
+                { question: "¿Cómo se dice 'pimienta' en inglés?", answer: "pepper" },
+                { question: "¿Cómo se dice 'sal' en inglés?", answer: "salt" },
+                { question: "¿Cómo se dice 'azúcar' en inglés?", answer: "sugar" },
+                { question: "¿Cómo se dice 'aceite' en inglés?", answer: "oil" },
+                { question: "¿Cómo se dice 'mantequilla' en inglés?", answer: "butter" },
+                { question: "¿Cómo se dice 'harina' en inglés?", answer: "flour" },
+                { question: "¿Cómo se dice 'miel' en inglés?", answer: "honey" },
+                { question: "¿Cómo se dice 'mermelada' en inglés?", answer: "jam" },
+                { question: "¿Cómo se dice 'yogur' en inglés?", answer: "yogurt" },
+                { question: "¿Cómo se dice 'crema' en inglés?", answer: "cream" },
+                { question: "¿Cómo se dice 'helado' en inglés?", answer: "ice cream" },
+                { question: "¿Cómo se dice 'galleta' en inglés?", answer: "cookie" },
+                { question: "¿Cómo se dice 'pastel' en inglés?", answer: "cake" },
+                { question: "¿Cómo se dice 'chocolate' en inglés?", answer: "chocolate" },
+                { question: "¿Cómo se dice 'dulce' en inglés?", answer: "candy" },
+                { question: "¿Cómo se dice 'chicle' en inglés?", answer: "gum" },
+                { question: "¿Cómo se dice 'caramelo' en inglés?", answer: "caramel" },
+                { question: "¿Cómo se dice 'palomitas' en inglés?", answer: "popcorn" },
+                { question: "¿Cómo se dice 'patatas fritas' en inglés?", answer: "chips" },
+                { question: "¿Cómo se dice 'nuez' en inglés?", answer: "nut" },
+                { question: "¿Cómo se dice 'almendra' en inglés?", answer: "almond" },
+                { question: "¿Cómo se dice 'avellana' en inglés?", answer: "hazelnut" }
+            ],
+            cosas: [
+                { question: "¿Cómo se dice 'coche' en inglés?", answer: "car" },
+                { question: "¿Cómo se dice 'libro' en inglés?", answer: "book" },
+                { question: "¿Cómo se dice 'casa' en inglés?", answer: "house" },
+                { question: "¿Cómo se dice 'escuela' en inglés?", answer: "school" },
+                { question: "¿Cómo se dice 'silla' en inglés?", answer: "chair" },
+                { question: "¿Cómo se dice 'mesa' en inglés?", answer: "table" },
+                { question: "¿Cómo se dice 'puerta' en inglés?", answer: "door" },
+                { question: "¿Cómo se dice 'ventana' en inglés?", answer: "window" },
+                { question: "¿Cómo se dice 'ordenador' en inglés?", answer: "computer" },
+                { question: "¿Cómo se dice 'teléfono' en inglés?", answer: "phone" },
+                { question: "¿Cómo se dice 'televisión' en inglés?", answer: "television" },
+                { question: "¿Cómo se dice 'reloj' en inglés?", answer: "clock" },
+                { question: "¿Cómo se dice 'lámpara' en inglés?", answer: "lamp" },
+                { question: "¿Cómo se dice 'cama' en inglés?", answer: "bed" },
+                { question: "¿Cómo se dice 'sofá' en inglés?", answer: "sofa" },
+                { question: "¿Cómo se dice 'armario' en inglés?", answer: "wardrobe" },
+                { question: "¿Cómo se dice 'espejo' en inglés?", answer: "mirror" },
+                { question: "¿Cómo se dice 'cuadro' en inglés?", answer: "picture" },
+                { question: "¿Cómo se dice 'papel' en inglés?", answer: "paper" },
+                { question: "¿Cómo se dice 'bolígrafo' en inglés?", answer: "pen" },
+                { question: "¿Cómo se dice 'lápiz' en inglés?", answer: "pencil" },
+                { question: "¿Cómo se dice 'borrador' en inglés?", answer: "eraser" },
+                { question: "¿Cómo se dice 'regla' en inglés?", answer: "ruler" },
+                { question: "¿Cómo se dice 'mochila' en inglés?", answer: "backpack" },
+                { question: "¿Cómo se dice 'caja' en inglés?", answer: "box" },
+                { question: "¿Cómo se dice 'botella' en inglés?", answer: "bottle" },
+                { question: "¿Cómo se dice 'vaso' en inglés?", answer: "glass" },
+                { question: "¿Cómo se dice 'taza' en inglés?", answer: "cup" },
+                { question: "¿Cómo se dice 'plato' en inglés?", answer: "plate" },
+                { question: "¿Cómo se dice 'tenedor' en inglés?", answer: "fork" },
+                { question: "¿Cómo se dice 'cuchillo' en inglés?", answer: "knife" },
+                { question: "¿Cómo se dice 'cuchara' en inglés?", answer: "spoon" },
+                { question: "¿Cómo se dice 'sartén' en inglés?", answer: "pan" },
+                { question: "¿Cómo se dice 'olla' en inglés?", answer: "pot" },
+                { question: "¿Cómo se dice 'microondas' en inglés?", answer: "microwave" },
+                { question: "¿Cómo se dice 'nevera' en inglés?", answer: "fridge" },
+                { question: "¿Cómo se dice 'lavadora' en inglés?", answer: "washing machine" },
+                { question: "¿Cómo se dice 'secadora' en inglés?", answer: "dryer" },
+                { question: "¿Cómo se dice 'tostadora' en inglés?", answer: "toaster" },
+                { question: "¿Cómo se dice 'licuadora' en inglés?", answer: "blender" },
+                { question: "¿Cómo se dice 'batidora' en inglés?", answer: "mixer" }
+            ],
+            animales: [
+                { question: "¿Cómo se dice 'perro' en inglés?", answer: "dog" },
+                { question: "¿Cómo se dice 'gato' en inglés?", answer: "cat" },
+                { question: "¿Cómo se dice 'vaca' en inglés?", answer: "cow" },
+                { question: "¿Cómo se dice 'cerdo' en inglés?", answer: "pig" },
+                { question: "¿Cómo se dice 'oveja' en inglés?", answer: "sheep" },
+                { question: "¿Cómo se dice 'caballo' en inglés?", answer: "horse" },
+                { question: "¿Cómo se dice 'pollo' en inglés?", answer: "chicken" },
+                { question: "¿Cómo se dice 'pato' en inglés?", answer: "duck" },
+                { question: "¿Cómo se dice 'ganso' en inglés?", answer: "goose" },
+                { question: "¿Cómo se dice 'pavo' en inglés?", answer: "turkey" },
+                { question: "¿Cómo se dice 'conejo' en inglés?", answer: "rabbit" },
+                { question: "¿Cómo se dice 'ratón' en inglés?", answer: "mouse" },
+                { question: "¿Cómo se dice 'elefante' en inglés?", answer: "elephant" },
+                { question: "¿Cómo se dice 'león' en inglés?", answer: "lion" },
+                { question: "¿Cómo se dice 'tigre' en inglés?", answer: "tiger" },
+                { question: "¿Cómo se dice 'jirafa' en inglés?", answer: "giraffe" },
+                { question: "¿Cómo se dice 'mono' en inglés?", answer: "monkey" },
+                { question: "¿Cómo se dice 'oso' en inglés?", answer: "bear" },
+                { question: "¿Cómo se dice 'lobo' en inglés?", answer: "wolf" },
+                { question: "¿Cómo se dice 'zorro' en inglés?", answer: "fox" },
+                { question: "¿Cómo se dice 'ciervo' en inglés?", answer: "deer" },
+                { question: "¿Cómo se dice 'panda' en inglés?", answer: "panda" },
+                { question: "¿Cómo se dice 'cocodrilo' en inglés?", answer: "crocodile" },
+                { question: "¿Cómo se dice 'serpiente' en inglés?", answer: "snake" },
+                { question: "¿Cómo se dice 'tortuga' en inglés?", answer: "turtle" },
+                { question: "¿Cómo se dice 'rana' en inglés?", answer: "frog" },
+                { question: "¿Cómo se dice 'sapo' en inglés?", answer: "toad" },
+                { question: "¿Cómo se dice 'lagarto' en inglés?", answer: "lizard" },
+                { question: "¿Cómo se dice 'camaleón' en inglés?", answer: "chameleon" },
+                { question: "¿Cómo se dice 'canguro' en inglés?", answer: "kangaroo" },
+                { question: "¿Cómo se dice 'koala' en inglés?", answer: "koala" },
+                { question: "¿Cómo se dice 'perezoso' en inglés?", answer: "sloth" },
+                { question: "¿Cómo se dice 'delfín' en inglés?", answer: "dolphin" },
+                { question: "¿Cómo se dice 'ballena' en inglés?", answer: "whale" },
+                { question: "¿Cómo se dice 'tiburón' en inglés?", answer: "shark" },
+                { question: "¿Cómo se dice 'medusa' en inglés?", answer: "jellyfish" },
+                { question: "¿Cómo se dice 'pulpo' en inglés?", answer: "octopus" },
+                { question: "¿Cómo se dice 'cangrejo' en inglés?", answer: "crab" },
+                { question: "¿Cómo se dice 'langosta' en inglés?", answer: "lobster" },
+                { question: "¿Cómo se dice 'calamar' en inglés?", answer: "squid" }
+            ]
+        };
+
+        let currentCategory = '';
+        let currentQuestion = 0;
+
+        function startQuiz() {
+            currentCategory = document.getElementById("category").value;
+            currentQuestion = 0;
+            document.getElementById("categorySelection").style.display = "none";
+            document.getElementById("quiz").style.display = "block";
+            document.getElementById("question").textContent = questions[currentCategory][currentQuestion].question;
+            document.getElementById("answer").value = "";
+            document.getElementById("result").textContent = "";
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+            const correctAnswer = questions[currentCategory][currentQuestion].answer.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById("result").textContent = "¡Correcto!";
+                currentQuestion++;
+                if (currentQuestion < questions[currentCategory].length) {
+                    document.getElementById("question").textContent = questions[currentCategory][currentQuestion].question;
+                    document.getElementById("answer").value = "";
+                } else {
+                    document.getElementById("question").textContent = "¡Quiz completado!";
+                    document.getElementById("answer").style.display = "none";
+                    document.getElementById("submitBtn").style.display = "none";
+                }
+            } else {
+                document.getElementById("result").textContent = "Incorrecto. Inténtalo de nuevo.";
+                document.getElementById("answer").value = "";
+            }
+        }
+
+        function goToStart() {
+            document.getElementById("categorySelection").style.display = "block";
+            document.getElementById("quiz").style.display = "none";
+            document.getElementById("answer").style.display = "inline";
+            document.getElementById("submitBtn").style.display = "inline";
+            document.getElementById("answer").value = "";
+        }
+    </script>
+</body>
+</html>
